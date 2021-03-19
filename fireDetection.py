@@ -8,7 +8,7 @@ from scipy import stats
 # Utility Libraries
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
-# import pprint
+import pprint
 import time
 
 # Reading the file
@@ -17,7 +17,7 @@ filename = askopenfilename()
 print("filename: ", filename)
 img = cv.imread(filename, -1)  # reading image 
 # img = np.float32(img)/255
-
+pprint.pprint(img.shape)
 # Convert from BGR to Lab format
 imgLab = cv.cvtColor(img, cv.COLOR_BGR2LAB)
 
@@ -26,6 +26,7 @@ L,A,B = cv.split(imgLab)
 Lmean = np.mean(L)
 Amean = np.mean(A)
 Bmean = np.mean(B)
+pprint.pprint(A)
 # plt.imshow(L)
 # plt.show()
 print(np.mean(L))
@@ -40,37 +41,49 @@ lowerBound = np.array([int(Lmean), int(np.min(A)), int(np.min(B))])
 upperBound = np.array([int(np.max(L)), int(np.max(A)), int(np.max(B))])
 maskR1 = cv.inRange(imgLab, lowerBound, upperBound)
 result1 = cv.bitwise_and(imgLab, imgLab, mask=maskR1)
-# cv.imshow("Mask R1 Result",result)
-# plt.subplot(1, 2, 1)
-# plt.imshow(maskR1, cmap="gray")
-# plt.subplot(1, 2, 2)
-# plt.imshow(result1)
-# plt.show()
 
 # Extracting R2 Mask
 lowerBound = np.array([int(np.min(L)), int(Amean), int(np.min(B))])
 upperBound = np.array([int(np.max(L)), int(np.max(A)), int(np.max(B))])
 maskR2 = cv.inRange(imgLab, lowerBound, upperBound)
 result2 = cv.bitwise_and(imgLab, imgLab, mask=maskR2)
-# cv.imshow("Mask R1 Result",result)
-# plt.subplot(1, 2, 1)
-# plt.imshow(maskR2, cmap="gray")
-# plt.subplot(1, 2, 2)
-# plt.imshow(result2)
-# plt.show()
 
 # Extracting R3 Mask
 lowerBound = np.array([int(np.min(L)), int(np.min(A)), int(Bmean)])
 upperBound = np.array([int(np.max(L)), int(np.max(A)), int(np.max(B))])
 maskR3 = cv.inRange(imgLab, lowerBound, upperBound)
+pprint.pprint(maskR3)
 result3 = cv.bitwise_and(imgLab, imgLab, mask=maskR3)
-# cv.imshow("Mask R1 Result",result)
+
+# Extracting R4 Mask
+# pprint.pprint(img)
+maskR4 = np.logical_and(A>B, A<np.max(A))
+# img[maskR4] = 
+result4 = cv.bitwise_and(imgLab, imgLab, mask=maskR4)
+pprint.pprint(maskR4)
+
+# R = [(30,70),(0,100),(0,100)]
+# red_range = np.logical_and(R[0][0] < img[:,:,0], img[:,:,0] < R[0][1])
+# green_range = np.logical_and(R[1][0] < img[:,:,0], img[:,:,0] < R[1][1])
+# blue_range = np.logical_and(R[2][0] < img[:,:,0], img[:,:,0] < R[2][1])
+# pprint.pprint(blue_range)
+# valid_range = np.logical_and(red_range, green_range, blue_range)
+# pprint.pprint(valid_range[0])
+# print(valid_range[0].length())
+# img[valid_range] = 100
+# img[np.logical_not(valid_range)] = 0
+
+# plt.imshow(img)
+# plt.show()
+
+
+
 plt.subplot(1, 3, 1)
 plt.imshow(maskR1, cmap="gray")
 plt.subplot(1, 3, 2)
 plt.imshow(maskR2, cmap="gray")
 plt.subplot(1, 3, 3)
-plt.imshow(maskR3, cmap="gray")
+plt.imshow(result4, cmap="gray")
 plt.show()
 
 
