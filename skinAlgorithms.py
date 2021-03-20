@@ -235,21 +235,10 @@ def wangAlgo(img):
     upperBound = np.array((255, 93, 119))
     # upperBound = np.array((1000, 363, 465))
     maskR2 = cv.inRange(imgRGB, lowerBound, upperBound)
-    
-    # bounds = [(0,1000),(28,363),(36,465)]
-    # blue_range = np.logical_and(bounds[0][0] < imgRGB[:,:,0], imgRGB[:,:,0] < bounds[0][1])
-    # green_range = np.logical_and(bounds[1][0] < imgRGB[:,:,0], imgRGB[:,:,0] < bounds[1][1])
-    # red_range = np.logical_and(bounds[2][0] < imgRGB[:,:,0], imgRGB[:,:,0] < bounds[2][1])
-    # valid_range = np.logical_and(blue_range, green_range, red_range)
 
     # maskR2[valid_range] = 255
     # maskR2[np.logical_not(valid_range)] = 0
     cv.imwrite("maskR2.png", maskR2)
-    
-    # # Creating R4 Mask (R > B)
-    # maskR4 = rChannel - bChannel
-    # maskR4[rChannel > bChannel] = 255
-    # maskR4[rChannel <= bChannel] = 0
     
     filteredImgHSV = cv.bitwise_and(imgHSV, imgHSV, mask=maskR1)
     cv.imwrite("HSV.png", filteredImgHSV)
