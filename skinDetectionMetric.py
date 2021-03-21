@@ -22,13 +22,13 @@ from tkinter.filedialog import askopenfilename
 import pprint
 import time
 
+# Extracting the skin section from the ground truth images
 print("Select the ground truth image")
 
-# Extracting the skin section from the ground truth images
 # Reading the ground truth file
 Tk().withdraw()
 filename = askopenfilename()
-print("filename: ", filename)
+print("Ground Truth Image:", filename)
 
 # Check if file was selected
 if not filename:
@@ -38,32 +38,34 @@ if not filename:
 # Reading Image
 grndTruthImg = cv.imread(filename, -1)
 # img = np.float32(img)/255
-print("Image dimensions: ")
-pprint.pprint(grndTruthImg.shape)
-rows, cols, extra = grndTruthImg.shape
+cols, rows, extra = grndTruthImg.shape
+print("Image dimensions:", rows, "x", cols)
+# pprint.pprint(grndTruthImg.shape)
 
 
 # Creating the mask from the ground truth image
 lowerBound = np.array((0, 0, 0))
-upperBound = np.array((235, 235, 255)) # Removing all white-ish pixels from ground truth image
+# Removing all white-ish pixels from ground truth image
+upperBound = np.array((235, 235, 255))
 mask = cv.inRange(grndTruthImg, lowerBound, upperBound)
 maskedTruthImg = cv.bitwise_and(grndTruthImg, grndTruthImg, mask=mask)
 # cv.imwrite("testingGrndTruth.png", maskedTruthImg)
 
 # Saving the count of pixels that are skin pixels and not skin pixels
 skinPixelCount = np.count_nonzero(np.all(maskedTruthImg != (0, 0, 0), axis=-1))
-print("Skin pixels: ",skinPixelCount)
+print("Skin pixels:", skinPixelCount)
 notSkinPixelCount = (rows*cols) - skinPixelCount
-print("Not skin pixels: ", notSkinPixelCount)
+print("Not skin pixels:", notSkinPixelCount)
 
 
+print()
 print("Select processed image")
 # Comparing ground truth with mask
 
 # Retreiving processed image
 Tk().withdraw()
 filename = askopenfilename()
-print("filename: ", filename)
+print("Processed Image:", filename)
 
 # Check if file was selected
 if not filename:
@@ -78,12 +80,12 @@ processedMaskedImg = cv.bitwise_and(skinImg, skinImg, mask=mask)
 # cv.imwrite("testingProcessedImgMask.png", processedMaskedImg)
 
 # Counting num of pixels that are stil present
-processedSkinImgPixelCount = np.count_nonzero(np.all(processedMaskedImg != (0, 0, 0), axis=-1))
+processedSkinImgPixelCount = np.count_nonzero(
+    np.all(processedMaskedImg != (0, 0, 0), axis=-1))
 print("Skin pixels present in processed image:", processedSkinImgPixelCount)
 # print("Not skin pixels: ", np.count_nonzero(np.all(processedMaskedImg == (0, 0, 0), axis=-1)))
 
-print("True positive %: ", round(processedSkinImgPixelCount/skinPixelCount * 100, 3))
-
+print("True positive %:", round(processedSkinImgPixelCount/skinPixelCount * 100, 3))
 
 # Extracting false positive
 falsePosImg = cv.bitwise_xor(skinImg, processedMaskedImg)
@@ -94,6 +96,4 @@ falsePosSkinCount = np.count_nonzero(np.all(falsePosImg != (0, 0, 0), axis=-1))
 print("Non skin pixels present in processed image:", falsePosSkinCount)
 # print("Not skin pixels: ", np.count_nonzero(np.all(falsePosImg == (0, 0, 0), axis=-1)))
 
-print("False positive %: ", round(falsePosSkinCount/notSkinPixelCount * 100, 3))
-
-
+print("False positive %:", round(falsePosSkinCount/notSkinPixelCount * 100, 3))
