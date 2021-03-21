@@ -4,8 +4,9 @@ ID: 1049254
 Course: CIS*4720
 Assignment 3
 
-Description: This file helps measure the percentage of true positive that is present 
-             in the processed images by using a ground truth image as basis
+Description: This file helps measure the percentage of true and false positives that are present 
+             in the processed images by using a ground truth image as basis and comparing it to 
+             the processed images in the form of a percentage
 
 """
 # Image Processing Libraries
@@ -21,11 +22,13 @@ from tkinter.filedialog import askopenfilename
 import pprint
 import time
 
+print("Select the ground truth image")
+
 # Extracting the skin section from the ground truth images
 # Reading the ground truth file
 Tk().withdraw()
 filename = askopenfilename()
-# print("filename: ", filename)
+print("filename: ", filename)
 
 # Check if file was selected
 if not filename:
@@ -53,12 +56,14 @@ print("Skin pixels: ",skinPixelCount)
 notSkinPixelCount = (rows*cols) - skinPixelCount
 print("Not skin pixels: ", notSkinPixelCount)
 
+
+print("Select processed image")
 # Comparing ground truth with mask
 
 # Retreiving processed image
 Tk().withdraw()
 filename = askopenfilename()
-# print("filename: ", filename)
+print("filename: ", filename)
 
 # Check if file was selected
 if not filename:

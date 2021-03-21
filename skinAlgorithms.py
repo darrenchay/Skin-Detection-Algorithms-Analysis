@@ -263,80 +263,87 @@ def normalized(img):
         # pprint.pprint(norm_rgb)
         # cv.imwrite("normalized.png", norm_rgb)
         return norm_rgb
-  
-# Reading the file
-Tk().withdraw()
-filename = askopenfilename()
-# print("filename: ", filename)
 
-# Check if file was selected
-if not filename:
-    print("error: no file selected")
-    exit(1)
+stop = True
+while(stop):
+    # Reading the file
+    Tk().withdraw()
+    filename = askopenfilename()
+    # print("filename: ", filename)
 
-# Reading Image
-img = cv.imread(filename, -1)
-# img = np.float32(img)/255
-pprint.pprint(img.shape)
-rows, cols, extra = img.shape
+    # Check if file was selected
+    if not filename:
+        print("error: no file selected")
+        exit(1)
 
-# Choosing which algorithm to run
-algorithmNo = 0
-while int(algorithmNo) not in [1, 2, 3]:
-    print("******************************************")
-    print("\t\tAlgorithms:")
-    print("******************************************")
-    print("Peer et al. (RGB color space):\t\t", 1)
-    print("Chai & Ngan (YCbCr color space):\t", 2)
-    print("Wang & Yuan (HSV & normalized RGB):\t", 3)
-    # print("Lin et al. (HSI color space):\t\t", 4)
-    print("******************************************")
-    algorithmNo = input("Enter the number of the algorithm you want to run: ")
-    if not algorithmNo.isnumeric():
-        algorithmNo = 0
+    # Reading Image
+    img = cv.imread(filename, -1)
+    # img = np.float32(img)/255
+    pprint.pprint(img.shape)
+    rows, cols, extra = img.shape
 
-algorithmNo = int(algorithmNo)
+    # Choosing which algorithm to run
+    algorithmNo = 0
+    while int(algorithmNo) not in [1, 2, 3]:
+        print("******************************************")
+        print("\t\tAlgorithms:")
+        print("******************************************")
+        print("Peer et al. (RGB color space):\t\t", 1)
+        print("Chai & Ngan (YCbCr color space):\t", 2)
+        print("Wang & Yuan (HSV & normalized RGB):\t", 3)
+        # print("Lin et al. (HSI color space):\t\t", 4)
+        print("******************************************")
+        algorithmNo = input("Enter the number of the algorithm you want to run: ")
+        if not algorithmNo.isnumeric():
+            algorithmNo = 0
 
-# Saving the name of the output image file
-filenameSplit = filename.split("/")
+    algorithmNo = int(algorithmNo)
 
-# Starting timer
-startTime = time.time()
+    # Saving the name of the output image file
+    filenameSplit = filename.split("/")
 
-# Running the appropriate algorithm
-if algorithmNo is 1:
-    newFileName = 'Results/peer-output-' + \
-        filenameSplit[len(filenameSplit)-1]
-    print("Output File: ", newFileName)
+    # Starting timer
+    startTime = time.time()
 
-    print("=========================\nRunning Peer et al. Algorithm\n=========================")
-    processedImage = peerAlgo(img)
-elif algorithmNo is 2:
-    newFileName = 'Results/chai-output-' + \
-        filenameSplit[len(filenameSplit)-1]
-    print("Output File: ", newFileName)
+    # Running the appropriate algorithm
+    if algorithmNo is 1:
+        newFileName = 'Results/peer-output-' + \
+            filenameSplit[len(filenameSplit)-1]
+        print("Output File: ", newFileName)
 
-    print("=========================\nRunning Chai & Ngan Algorithm\n=========================")
-    processedImage = chaiAlgo(img)
-elif algorithmNo is 3:
-    newFileName = 'Results/wang-output-' + \
-        filenameSplit[len(filenameSplit)-1]
-    print("Output File: ", newFileName)
+        print("=========================\nRunning Peer et al. Algorithm\n=========================")
+        processedImage = peerAlgo(img)
+    elif algorithmNo is 2:
+        newFileName = 'Results/chai-output-' + \
+            filenameSplit[len(filenameSplit)-1]
+        print("Output File: ", newFileName)
 
-    print("=========================\nRunning Wang & Yuan Algorithm\n=========================")
-    processedImage = wangAlgo(img)
-else:
-    newFileName = 'Results/lin-output-' + \
-        filenameSplit[len(filenameSplit)-1]
-    print("Output File: ", newFileName)
+        print("=========================\nRunning Chai & Ngan Algorithm\n=========================")
+        processedImage = chaiAlgo(img)
+    elif algorithmNo is 3:
+        newFileName = 'Results/wang-output-' + \
+            filenameSplit[len(filenameSplit)-1]
+        print("Output File: ", newFileName)
 
-    print("=========================\nRunning Lin et al. Algorithm\n=========================")
-    # processedImage = linAlgo(img)
+        print("=========================\nRunning Wang & Yuan Algorithm\n=========================")
+        processedImage = wangAlgo(img)
+    else:
+        newFileName = 'Results/lin-output-' + \
+            filenameSplit[len(filenameSplit)-1]
+        print("Output File: ", newFileName)
 
-# Ending timer
-endTime = time.time()
-timeTaken = round(endTime - startTime, 3)
-print("Time taken: ", timeTaken, " seconds")
+        print("=========================\nRunning Lin et al. Algorithm\n=========================")
+        # processedImage = linAlgo(img)
 
-# Saving processed image
-cv.imwrite(newFileName, processedImage)
+    # Ending timer
+    endTime = time.time()
+    timeTaken = round(endTime - startTime, 3)
+    print("Time taken: ", timeTaken, " seconds")
+
+    # Saving processed image
+    cv.imwrite(newFileName, processedImage)
+    
+    # Keep processing until "n" is selected
+    stopInput = input("Stop processing? (Press 'x' to stop and anything else to continue)").lower()
+    if(stopInput is "x"):
+        stop = False
